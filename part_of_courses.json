@@ -1,0 +1,74 @@
+[
+    {
+        "jgpxzd": "1", 
+        "jsxx": "2006982442/蒋元中/副教授", 
+        "jxb_id": "6DF21C694A25435DE0531D50A8C07835", 
+        "jxbrs": "30", 
+        "jxdd": "舞二", 
+        "jxms": "本校课程", 
+        "krrl": "0", 
+        "listnav": "false", 
+        "localeKey": "zh_CN", 
+        "pageable": true, 
+        "queryModel": {
+            "currentPage": 1, 
+            "currentResult": 0, 
+            "entityOrField": false, 
+            "limit": 15, 
+            "offset": 0, 
+            "pageNo": 0, 
+            "pageSize": 15, 
+            "showCount": 10, 
+            "totalCount": 0, 
+            "totalPage": 0, 
+            "totalResult": 0
+        }, 
+        "rangeable": true, 
+        "sksj": "星期四第11-12节{2-17周}", 
+        "totalResult": "0", 
+        "userModel": {
+            "monitor": false, 
+            "roleCount": 0, 
+            "roleKeys": "", 
+            "roleValues": "", 
+            "status": 0, 
+            "usable": false
+        }
+    }, 
+    {
+        "jgpxzd": "1", 
+        "jsxx": "2006982444/李孝其/副教授", 
+        "jxb_id": "6DF21C694A3E435DE0531D50A8C07835", 
+        "jxbrs": "30", 
+        "jxdd": "羽毛球1", 
+        "jxms": "本校课程", 
+        "krrl": "0", 
+        "listnav": "false", 
+        "localeKey": "zh_CN", 
+        "pageable": true, 
+        "queryModel": {
+            "currentPage": 1, 
+            "currentResult": 0, 
+            "entityOrField": false, 
+            "limit": 15, 
+            "offset": 0, 
+            "pageNo": 0, 
+            "pageSize": 15, 
+            "showCount": 10, 
+            "totalCount": 0, 
+            "totalPage": 0, 
+            "totalResult": 0
+        }, 
+        "rangeable": true, 
+        "sksj": "星期四第1-2节{2-17周}", 
+        "totalResult": "0", 
+        "userModel": {
+            "monitor": false, 
+            "roleCount": 0, 
+            "roleKeys": "", 
+            "roleValues": "", 
+            "status": 0, 
+            "usable": false
+        }
+    }
+]
