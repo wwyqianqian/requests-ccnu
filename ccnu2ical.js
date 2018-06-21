@@ -3,17 +3,13 @@
 
 
 (function() {
-    // 针对 CCNU 的课程表格式改进了解析方案
-    // 可选设置如下
-  
     // 设置开学第一天的[[前一天]] 
     // 也就是学期第一周星期一前的[[星期日]]的日期
-    var FIRST_DAY = new Date("2018-09-02");
+    var FIRST_DAY = new Date("2018-08-26");
     // 有的教务会把菜单放在外围, 然后课程表千在 iframe 中显示
     // 如果是这样的话, 需要把下面的设置为 true 否则可能取到的是空的
     var TIMETABLE_IN_IFRAME = false;
 
-    // 以下不是设置区域
     var DAY_MAPPING = {
         "一": 1,
         "二": 2,
@@ -118,6 +114,7 @@
     for (var m = 0; m < courses.length; m++) {
         var course = courses[m];
         for (var week = course.period[0]; week <= course.period[1]; week++) {
+            if (course.period[0] > week && course.period[1] < week) continue;
             var beginTime = new Date();
             var endTime = new Date();
             var tzOffset = beginTime.getTimezoneOffset() * 60 * 1000;
