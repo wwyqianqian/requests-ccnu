@@ -44,8 +44,8 @@ def printHeader():
 
 def printEvents():
     data = getData()
-        for i in range(len(data["kbList"])):
-        new_data = data["kbList"][i]      
+    for i in range(len(data["kbList"])):
+        new_data = data["kbList"][i]
 
 
         description = new_data["xm"] + " " + new_data["jxbmc"] + "课堂"
@@ -74,13 +74,13 @@ def printEvents():
             '12': [10, 55, 11, 40],
             '13': [12, 0, 12, 45],
             '14': [12, 55, 13, 40],
-        };  
+        };
         for key in TIME_DICT:
             if key == re_start2End[0]:
                 course_start_time = time2str(str(TIME_DICT[key][0])) + time2str(str(TIME_DICT[key][1])) + "00Z"
             elif key == re_start2End[1]:
-                course_end_time = time2str(str(TIME_DICT[key][2])) + time2str(str(TIME_DICT[key][3])) + "00Z"     
-      
+                course_end_time = time2str(str(TIME_DICT[key][2])) + time2str(str(TIME_DICT[key][3])) + "00Z"
+
         weeks = new_data["zcd"]
         re_weeks = re.findall(r"\d+", weeks)
         weeks_cycle = int(re_weeks[1]) - int(re_weeks[0]) + 1
@@ -95,12 +95,12 @@ def printEvents():
             "星期三": 3,
             "星期四": 4,
             "星期五": 5,
-            "星期六": 6,   
-        };
+            "星期六": 6,
+            };
         for key in DAY_DICT:
             if key == dayInWeek:
                 course_start_date = int(defineSunday) + int(DAY_DICT[key])
-                
+
 
         with open('/Users/qianqian/Desktop/cal.ics', 'a', encoding='utf-8') as f:
             print('BEGIN:VEVENT', file=f)
@@ -116,17 +116,18 @@ def printEvents():
             print('SUMMARY:' + str(summary) ,file=f)
             print('RRULE:' + rrule, file=f)
             print('END:VEVENT', file=f)
-            print('END:VCALENDAR', file=f)
+    with open('/Users/qianqian/Desktop/cal.ics', 'a', encoding='utf-8') as f:
+        print('END:VCALENDAR', file=f)
 
-def time2str(i):    
+def time2str(i):
     if int(i) < 10:
         return "0" + str(i)
     else:
         return str(i)
-  
 
-def main():   
+
+def main():
     printHeader()
     printEvents()
 
-main()    
+main()
