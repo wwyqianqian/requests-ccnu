@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# Copyright © 2018 - wwyqianqian <wwyqianqian2@gmail.com>
+# Copyright © 2018 - wwyqianqian <wwyqianqian@whres.net>
 # Source code: https://github.com/wwyqianqian/requests-ccnu/blob/master/ccnu2ical.py
-
+# RFC: https://tools.ietf.org/html/rfc5545
 
 import requests
 import json
