@@ -14,7 +14,7 @@ import re
 def getData():
     cookies = {
         'x': 'x',
-        'x': 'x',
+        'xx': 'xx',
     }
     headers = {
         'Origin': 'http://xk.ccnu.edu.cn',
@@ -30,25 +30,25 @@ def getData():
     params = (
         ('gnmkdm', 'N2151'),
     )
-    data = [
-        ('xnm', '2018'),
-        ('xqm', '3'),
-    ]
+    data = {
+        'xnm': '2018',
+        'xqm': '3',
+    }
     response = requests.post('http://xk.ccnu.edu.cn/kbcx/xskbcx_cxXsKb.html', headers=headers, params=params, cookies=cookies, data=data)
-    data = json.loads(response.text)
-    return data
+    res_data = json.loads(response.text)
+    return res_data
 
 def printHeader():
     with open('/Users/qianqian/Desktop/cal.ics', 'w', encoding='utf-8') as f:
-        print('BEGIN:VCALENDAR\nPRODID:-//wwyqianqian//CCNU2ICAL Calendar 0.0001//CN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:Courses\nX-WR-TIMEZONE:Asia/Shanghai\nBEGIN:VTIMEZONE\nTZID:Asia/Shanghai\nX-LIC-LOCATION:Asia/Shanghai\nBEGIN:STANDARD\nTZOFFSETFROM:+0800\nTZOFFSETTO:+0800\nTZNAME:CST\nDTSTART:19700101T000000\nEND:STANDARD\nEND:VTIMEZONE\n', file=f)
+        f.write('BEGIN:VCALENDAR\nPRODID:-//wwyqianqian//CCNU2ICAL Calendar v0.5.0//CN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:Courses\nX-WR-TIMEZONE:Asia/Shanghai\nBEGIN:VTIMEZONE\nTZID:Asia/Shanghai\nX-LIC-LOCATION:Asia/Shanghai\nBEGIN:STANDARD\nTZOFFSETFROM:+0800\nTZOFFSETTO:+0800\nTZNAME:CST\nDTSTART:19700101T000000\nEND:STANDARD\nEND:VTIMEZONE\n')
 
 def printEvents():
     data = getData()
     for i in range(len(data["kbList"])):
         new_data = data["kbList"][i]
 
-
-        description = new_data["xm"] + " " + new_data["jxbmc"] + "课堂"
+        description1 = new_data["xm"]
+        description2 = new_data["jxbmc"] + "课堂"
         location = new_data["cdmc"]
         summary = new_data["kcmc"]
         date_stamp = "20180625T000000Z"
@@ -77,9 +77,9 @@ def printEvents():
         };
         for key in TIME_DICT:
             if key == re_start2End[0]:
-                course_start_time = time2str(str(TIME_DICT[key][0])) + time2str(str(TIME_DICT[key][1])) + "00Z"
+                course_start_time = str(TIME_DICT[key][0]).zfill(2) + str(TIME_DICT[key][1]).zfill(2) + "00Z"
             elif key == re_start2End[1]:
-                course_end_time = time2str(str(TIME_DICT[key][2])) + time2str(str(TIME_DICT[key][3])) + "00Z"
+                course_end_time = str(TIME_DICT[key][2]).zfill(2) + str(TIME_DICT[key][3]).zfill(2) + "00Z"
 
         weeks = new_data["zcd"]
         re_weeks = re.findall(r"\d+", weeks)
@@ -96,34 +96,26 @@ def printEvents():
             "星期四": 4,
             "星期五": 5,
             "星期六": 6,
-            };
-        for key in DAY_DICT:
-            if key == dayInWeek:
-                course_start_date = int(defineSunday) + int(DAY_DICT[key])
+        };
+        course_start_date = int(defineSunday) + int(DAY_DICT[dayInWeek])
 
 
         with open('/Users/qianqian/Desktop/cal.ics', 'a', encoding='utf-8') as f:
-            print('BEGIN:VEVENT', file=f)
-            print('DTSTART:' + str(course_start_date) + 'T' + str(course_start_time), file=f)
-            print('DTEND:' + str(course_start_date) + 'T' + str(course_end_time), file=f)
-            print('DTSTAMP:' + str(date_stamp), file=f)
-            print('UID:' + str(uid), file=f)
-            print('CREATED:' + str(created), file=f)
-            print('DESCRIPTION:' + str(description), file=f)
-            print('LAST-MODIFIED:' + str(last_modified), file=f)
-            print('LOCATION:' + str(location) , file=f)
-            print('STATUS:' + str(status), file=f)
-            print('SUMMARY:' + str(summary) ,file=f)
-            print('RRULE:' + rrule, file=f)
-            print('END:VEVENT', file=f)
+            f.write('BEGIN:VEVENT' + '\n')
+            f.write('DTSTART:' + str(course_start_date) + 'T' + str(course_start_time) + '\n')
+            f.write('DTEND:' + str(course_start_date) + 'T' + str(course_end_time) + '\n')
+            f.write('DTSTAMP:' + str(date_stamp) + '\n')
+            f.write('UID:' + str(uid) + '\n')
+            f.write('CREATED:' + str(created) + '\n')
+            f.write('DESCRIPTION:{0} {1}'.format(description1, description2) + '\n')
+            f.write('LAST-MODIFIED:' + str(last_modified) + '\n')
+            f.write('LOCATION:' + str(location) + '\n')
+            f.write('STATUS:' + str(status) + '\n')
+            f.write('SUMMARY:' + str(summary) + '\n')
+            f.write('RRULE:' + rrule + '\n')
+            f.write('END:VEVENT' + '\n')
     with open('/Users/qianqian/Desktop/cal.ics', 'a', encoding='utf-8') as f:
-        print('END:VCALENDAR', file=f)
-
-def time2str(i):
-    if int(i) < 10:
-        return "0" + str(i)
-    else:
-        return str(i)
+        f.write('END:VCALENDAR')
 
 
 def main():
