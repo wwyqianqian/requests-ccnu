@@ -20,21 +20,55 @@ def spocLogin(account, password):
     ('password', password),
     ]
 
-    r = requests.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
+    s = requests.Session()
+    s.get('http://spoc.ccnu.edu.cn/')
+    print("初始化 s.cookies.get_dict()：", s.cookies.get_dict())
+
+    r = s.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
     print(r.text)
     data = json.loads(r.text)
     if data['code'] == 0:
         print("登录成功!")
 
-        responseSession = requests.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-        setCookie = responseSession.headers['Set-Cookie']
-        print("这是服务端返回的cookie：", setCookie)
+        getUserProRes = s.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
+        print("getUserProRes.headers", getUserProRes.headers)
+        print("getUserProRes.request.headers", getUserProRes.request.headers)
 
-        splitSetCookie = re.split(r'\s+', setCookie)
-        myCookie = splitSetCookie[0][11:-1]
-        print("您的 JSESSIONID 为：", myCookie)
+        mysession = s.cookies.get_dict()
 
-    return myCookie
+        userLoginRes = requests.post('http://spoc.ccnu.edu.cn/userLoginController/userLogin', headers=headers, data=data, cookies=mysession)
+        print("userLoginRes.headers", userLoginRes.headers)
+        print("userLoginRes.request.headers", userLoginRes.request.headers)
+
+        newcookie = userLoginRes.headers['Set-Cookie']
+        splitSetCookie = re.split(r'\s+', newcookie)[0]
+        mysessioncookie = splitSetCookie[8:-1]
+        print(mysessioncookie)
+        thiscookie = {
+            "SESSION": mysessioncookie,
+        }
+
+        homeRes = requests.get('http://spoc.ccnu.edu.cn/studentHomepage', headers=headers, cookies=thiscookie)
+        print(homeRes.status_code)
+        print(homeRes.headers)
+        print(homeRes.request.headers)
+
+
+        # {'JSESSIONID': 'D0C5560B6215AE18AE2C3DD150712D37',
+        #  'SESSION': '5ac5e3d8-ce7b-499b-8d9c-c23b5223185f'}
+        # responseSession = requests.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
+        # print(responseSession.headers)
+        # setCookie = responseSession.headers['Set-Cookie']
+        # print("这是服务端返回的cookie：", setCookie)
+        #
+        # splitSetCookie = re.split(r'\s+', setCookie)
+        # myCookie = splitSetCookie[0][11:-1]
+        # print("您的 JSESSIONID 为：", myCookie)
+        #
+        # s = requests.Session()
+        # s.get('http://spoc.ccnu.edu.cn/')
+        # resptest = s.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
+        # print(s.cookies.get_dict())
 
 def getSiteResourceTree(siteID):
     data = [
