@@ -1,6 +1,6 @@
 import requests
 import json
-
+import re
 
 def spocLogin(account, password):
     headers = {
@@ -24,19 +24,26 @@ def spocLogin(account, password):
     print(r.text)
     data = json.loads(r.text)
     if data['code'] == 0:
-        print("wow! 迫真登录成功了")
+        print("登录成功!")
 
+        responseSession = requests.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
+        setCookie = responseSession.headers['Set-Cookie']
+        print("这是服务端返回的cookie：", setCookie)
 
-    resTest = requests.get('http://spoc.ccnu.edu.cn/studentHomepage', headers=headers, data=data)
-    mycookies = resTest.cookies.get_dict()
-    print("这是您的 cookie: ", mycookies)
-    return mycookies
+        splitSetCookie = re.split(r'\s+', setCookie)
+        myCookie = splitSetCookie[0][11:-1]
+        print("您的 JSESSIONID 为：", myCookie)
 
+    return myCookie
 
 def getSiteResourceTree(siteID):
     data = [
     ('siteId', siteID),
     ]
+
+    thisCookie = {
+        'JSESSIONID': resCookies,
+    }
 
     thisHeaders = {
         'Origin': 'http://spoc.ccnu.edu.cn',
@@ -49,11 +56,8 @@ def getSiteResourceTree(siteID):
         'X-Requested-With': 'XMLHttpRequest',
         'Connection': 'keep-alive',
     }
-    # print(thisHeaders['Referer'])
-    # print(siteID)
-    # print(resCookies)
 
-    response = requests.post('http://spoc.ccnu.edu.cn/siteResource/getSiteResourceTree', headers=thisHeaders, cookies=resCookies, data=data)
+    response = requests.post('http://spoc.ccnu.edu.cn/siteResource/getSiteResourceTree', headers=thisHeaders, cookies=thisCookie, data=data)
     print(response.text)
 
 
