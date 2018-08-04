@@ -79,14 +79,29 @@ def getChild(inputTree, i):
 
     if i < lenTree:
         if inputTree['child'][i]['attachment'] == []:
-            inputTree = inputTree['child'][i]['child'][0]
-            print("次调用", i)
-            getChild(inputTree, i+1)
+            childChild(inputTree['child'][i]['child'][0], i)
 
         else:
-            print(inputTree['child'][i]['attachment'][0]['attachment']['attachmentName'])
+            print(inputTree['attachment'][0]['attachment']['attachmentName'])
+            print("先的")
     else:
         return ("hhhhhhh")
+
+
+
+
+
+def childChild (childTree, i):
+
+    if childTree['attachment'] == []:
+        childTree = childTree['child'][0]
+
+        childChild(childTree, i)
+
+    else:
+        print(childTree['attachment'][0]['attachment']['attachmentName'])
+        print("后的\n")
+        getChild(bigConstTree, i+1)
 
 
 
