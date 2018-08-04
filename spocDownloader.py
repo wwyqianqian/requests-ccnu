@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import sys
 
 def spocLogin(account, password):
     headers = {
@@ -20,55 +21,31 @@ def spocLogin(account, password):
     ('password', password),
     ]
 
-    s = requests.Session()
-    s.get('http://spoc.ccnu.edu.cn/')
-    print("初始化 s.cookies.get_dict()：", s.cookies.get_dict())
+    session = requests.Session()
 
-    r = s.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
-    print(r.text)
-    data = json.loads(r.text)
-    if data['code'] == 0:
+    resCheck = session.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
+    print(resCheck.text)
+    dataload = json.loads(resCheck.text)
+    if dataload['code'] == 0:
         print("登录成功!")
-
-        getUserProRes = s.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-        print("getUserProRes.headers", getUserProRes.headers)
-        print("getUserProRes.request.headers", getUserProRes.request.headers)
-
-        mysession = s.cookies.get_dict()
-
-        userLoginRes = requests.post('http://spoc.ccnu.edu.cn/userLoginController/userLogin', headers=headers, data=data, cookies=mysession)
-        print("userLoginRes.headers", userLoginRes.headers)
-        print("userLoginRes.request.headers", userLoginRes.request.headers)
-
-        newcookie = userLoginRes.headers['Set-Cookie']
-        splitSetCookie = re.split(r'\s+', newcookie)[0]
-        mysessioncookie = splitSetCookie[8:-1]
-        print(mysessioncookie)
-        thiscookie = {
-            "SESSION": mysessioncookie,
-        }
-
-        homeRes = requests.get('http://spoc.ccnu.edu.cn/studentHomepage', headers=headers, cookies=thiscookie)
-        print(homeRes.status_code)
-        print(homeRes.headers)
-        print(homeRes.request.headers)
+    elif dataload['code'] == 1:
+        sys.exit("密码错误! 请重新登录")
+    elif dataload['code'] == 2:
+        sys.exit("用户名不存在!(学号错误)! 请重新登录")
+    elif dataload['code'] == 99:
+        sys.exit("用户验证失败！未知错误，请重新登录")
+    else:
+        print("未知登录状况，请谨慎后续操作。")
 
 
-        # {'JSESSIONID': 'D0C5560B6215AE18AE2C3DD150712D37',
-        #  'SESSION': '5ac5e3d8-ce7b-499b-8d9c-c23b5223185f'}
-        # responseSession = requests.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-        # print(responseSession.headers)
-        # setCookie = responseSession.headers['Set-Cookie']
-        # print("这是服务端返回的cookie：", setCookie)
-        #
-        # splitSetCookie = re.split(r'\s+', setCookie)
-        # myCookie = splitSetCookie[0][11:-1]
-        # print("您的 JSESSIONID 为：", myCookie)
-        #
-        # s = requests.Session()
-        # s.get('http://spoc.ccnu.edu.cn/')
-        # resptest = s.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-        # print(s.cookies.get_dict())
+    resGup = session.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
+    print('resGup.headers\n', resGup.headers)
+    print('resGup.requests.headers\n', resGup.request.headers)
+    print('resGup.text\n', resGup.text)
+    print('resGup.status_code\n', resGup.status_code)
+
+    print(session.cookies.get_dict())
+
 
 def getSiteResourceTree(siteID):
     data = [
