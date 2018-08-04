@@ -69,40 +69,48 @@ def getSiteResourceTree(siteID):
     constTree = dataTree['data'][0]['child'][0]
     return constTree
 
+def tree_dict(d, func):
+    for k, v in d.items():
+        if k == "attachmentName":
+            func(v)
 
-def getChild(inputTree, i):
+        if isinstance(v, dict) and v:
+            tree_dict(v, func)
 
+        elif isinstance(v, list) and v:
+            tree_list(v, func)
 
-    lenTree = len(bigConstTree['child'])
-    print("长度：", lenTree)
+def tree_dict2(d, func):
+    for k, v in d.items():
+        if k == "attachmentInfoId":
+            func(v)
 
+        if isinstance(v, dict) and v:
+            tree_dict2(v, func)
 
-    if i < lenTree:
-        if inputTree['child'][i]['attachment'] == []:
-            childChild(inputTree['child'][i]['child'][0], i)
+        elif isinstance(v, list) and v:
+            tree_list2(v, func)
 
-        else:
-            print(inputTree['attachment'][0]['attachment']['attachmentName'])
-            print("先的")
-    else:
-        return ("hhhhhhh")
+def tree_list(l, func):
+    for item in l:
+        if isinstance(item, dict) and item:
+            tree_dict(item, func)
+        elif isinstance(item, list) and item:
+            tree_list(item, func)
 
+def tree_list2(l, func):
+    for item in l:
+        if isinstance(item, dict) and item:
+            tree_dict2(item, func)
+        elif isinstance(item, list) and item:
+            tree_list2(item, func)
 
+func = print
 
+dataTree = json.load(f)
 
-
-def childChild (childTree, i):
-
-    if childTree['attachment'] == []:
-        childTree = childTree['child'][0]
-
-        childChild(childTree, i)
-
-    else:
-        print(childTree['attachment'][0]['attachment']['attachmentName'])
-        print("后的\n")
-        getChild(bigConstTree, i+1)
-
+tree_dict(dataTree, func)
+tree_dict2(dataTree, func)
 
 
     # print(constTree['child'][0]['child'][0]['child'][0]['child'][0]['child'][0]['attachment'][0]['attachment']['attachmentName'])
@@ -116,5 +124,5 @@ if __name__ == "__main__":
     resCookies = spocLogin(account, password)
     siteID = input('输入您想要下载资源的网页 URL http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= 后面的字符串\n')
     bigConstTree = getSiteResourceTree(siteID)
-    getChild(bigConstTree, 0)
+    
 
