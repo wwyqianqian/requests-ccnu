@@ -3,6 +3,7 @@ import json
 import re
 import sys
 
+
 def spocLogin(account, password):
     headers = {
         'Origin': 'http://spoc.ccnu.edu.cn',
@@ -24,7 +25,7 @@ def spocLogin(account, password):
     session = requests.Session()
 
     resCheck = session.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
-    print(resCheck.text)
+    # print(resCheck.text)
     dataload = json.loads(resCheck.text)
     if dataload['code'] == 0:
         print("登录成功!")
@@ -37,24 +38,19 @@ def spocLogin(account, password):
     else:
         print("未知登录状况，请谨慎后续操作。")
 
-
     resGup = session.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-    print('resGup.headers\n', resGup.headers)
-    print('resGup.requests.headers\n', resGup.request.headers)
-    print('resGup.text\n', resGup.text)
-    print('resGup.status_code\n', resGup.status_code)
+    # print('resGup.headers\n', resGup.headers)
+    # print('resGup.requests.headers\n', resGup.request.headers)
+    # print('resGup.text\n', resGup.text)
+    # print('resGup.status_code\n', resGup.status_code)
 
-    print(session.cookies.get_dict())
+    return session.cookies.get_dict()
 
 
 def getSiteResourceTree(siteID):
     data = [
     ('siteId', siteID),
     ]
-
-    thisCookie = {
-        'JSESSIONID': resCookies,
-    }
 
     thisHeaders = {
         'Origin': 'http://spoc.ccnu.edu.cn',
@@ -68,8 +64,35 @@ def getSiteResourceTree(siteID):
         'Connection': 'keep-alive',
     }
 
-    response = requests.post('http://spoc.ccnu.edu.cn/siteResource/getSiteResourceTree', headers=thisHeaders, cookies=thisCookie, data=data)
-    print(response.text)
+    resGetTree = requests.post('http://spoc.ccnu.edu.cn/siteResource/getSiteResourceTree', headers=thisHeaders, cookies=resCookies, data=data)
+    dataTree = json.loads(resGetTree.text)
+    constTree = dataTree['data'][0]['child'][0]
+    return constTree
+
+
+def getChild(inputTree, i):
+
+
+    lenTree = len(bigConstTree['child'])
+    print("长度：", lenTree)
+
+
+    if i < lenTree:
+        if inputTree['child'][i]['attachment'] == []:
+            inputTree = inputTree['child'][i]['child'][0]
+            print("次调用", i)
+            getChild(inputTree, i+1)
+
+        else:
+            print(inputTree['child'][i]['attachment'][0]['attachment']['attachmentName'])
+    else:
+        return ("hhhhhhh")
+
+
+
+    # print(constTree['child'][0]['child'][0]['child'][0]['child'][0]['child'][0]['attachment'][0]['attachment']['attachmentName'])
+    # source_url = constTree['child'][0]['child'][0]['child'][0]['child'][0]['child'][0]['attachment'][0]['attachmentInfoId']
+    # print('http://spoc.ccnu.edu.cn:80/getFileStream/' + source_url)
 
 
 if __name__ == "__main__":
@@ -77,4 +100,6 @@ if __name__ == "__main__":
     password = input('输入密码：')
     resCookies = spocLogin(account, password)
     siteID = input('输入您想要下载资源的网页 URL http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= 后面的字符串\n')
-    getSiteResourceTree(siteID)
+    bigConstTree = getSiteResourceTree(siteID)
+    getChild(bigConstTree, 0)
+
