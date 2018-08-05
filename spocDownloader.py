@@ -1,6 +1,5 @@
 import requests
 import json
-import re
 import sys
 
 
@@ -66,56 +65,36 @@ def getSiteResourceTree(siteID):
 
     resGetTree = requests.post('http://spoc.ccnu.edu.cn/siteResource/getSiteResourceTree', headers=thisHeaders, cookies=resCookies, data=data)
     dataTree = json.loads(resGetTree.text)
-    constTree = dataTree['data'][0]['child'][0]
-    return constTree
+    return dataTree
 
-def tree_dict(d, func):
+
+
+def tree_dict(d, need, attachmentList):
     for k, v in d.items():
-        if k == "attachmentName":
-            func(v)
-
+        if k == need:
+            attachmentList.append(v)
         if isinstance(v, dict) and v:
-            tree_dict(v, func)
-
+            tree_dict(v, need, attachmentList)
         elif isinstance(v, list) and v:
-            tree_list(v, func)
+            tree_list(v, need, attachmentList)
 
-def tree_dict2(d, func):
-    for k, v in d.items():
-        if k == "attachmentInfoId":
-            func(v)
 
-        if isinstance(v, dict) and v:
-            tree_dict2(v, func)
-
-        elif isinstance(v, list) and v:
-            tree_list2(v, func)
-
-def tree_list(l, func):
+def tree_list(l, need, attachmentList):
     for item in l:
         if isinstance(item, dict) and item:
-            tree_dict(item, func)
+            tree_dict(item, need, attachmentList)
         elif isinstance(item, list) and item:
-            tree_list(item, func)
+            tree_list(item, need, attachmentList)
 
-def tree_list2(l, func):
-    for item in l:
-        if isinstance(item, dict) and item:
-            tree_dict2(item, func)
-        elif isinstance(item, list) and item:
-            tree_list2(item, func)
+def printSource(name, infoID):
+    source = len(name)
+    print("云课堂上，本网站有 {} 个资源可供下载".format(source))
+    for i in range(source):
+        print("{0}. {1}".format(i + 1, name[i]))
+        print("本课件下载链接，请手动点击、重命名、并下载：")
+        print("http://spoc.ccnu.edu.cn:80/getFileStream/" + infoID[i])
+        print("---------------------------------------------------------------------------------")
 
-func = print
-
-dataTree = json.load(f)
-
-tree_dict(dataTree, func)
-tree_dict2(dataTree, func)
-
-
-    # print(constTree['child'][0]['child'][0]['child'][0]['child'][0]['child'][0]['attachment'][0]['attachment']['attachmentName'])
-    # source_url = constTree['child'][0]['child'][0]['child'][0]['child'][0]['child'][0]['attachment'][0]['attachmentInfoId']
-    # print('http://spoc.ccnu.edu.cn:80/getFileStream/' + source_url)
 
 
 if __name__ == "__main__":
@@ -124,5 +103,12 @@ if __name__ == "__main__":
     resCookies = spocLogin(account, password)
     siteID = input('输入您想要下载资源的网页 URL http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= 后面的字符串\n')
     bigConstTree = getSiteResourceTree(siteID)
-    
+    attachmentNameList = []
+    attachmentInfoIdList = []
+    tree_dict(bigConstTree, "attachmentName", attachmentNameList)
+    tree_dict(bigConstTree, "attachmentInfoId", attachmentInfoIdList)
+    # print(len(attachmentNameList))
+    # print(len(attachmentInfoIdList))
+    printSource(attachmentNameList, attachmentInfoIdList)
+
 
