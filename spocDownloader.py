@@ -1,3 +1,11 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+# Copyright © 2018 - wwyqianqian <wwyqianqian@whres.net>
+# Source Code: https://github.com/wwyqianqian/requests-ccnu/blob/master/spocDownloader.py
+# Version Number: v0.5.0
+# Last Modified: 2018.8.5
+
+
 import requests
 import json
 import sys
@@ -24,7 +32,7 @@ def spocLogin(account, password):
     session = requests.Session()
 
     resCheck = session.post('http://spoc.ccnu.edu.cn/userLoginController/checkLogin', headers=headers, data=data)
-    # print(resCheck.text)
+
     dataload = json.loads(resCheck.text)
     if dataload['code'] == 0:
         print("登录成功!")
@@ -38,11 +46,6 @@ def spocLogin(account, password):
         print("未知登录状况，请谨慎后续操作。")
 
     resGup = session.post('http://spoc.ccnu.edu.cn/userLoginController/getUserProfile', headers=headers, data=data)
-    # print('resGup.headers\n', resGup.headers)
-    # print('resGup.requests.headers\n', resGup.request.headers)
-    # print('resGup.text\n', resGup.text)
-    # print('resGup.status_code\n', resGup.status_code)
-
     return session.cookies.get_dict()
 
 
@@ -68,7 +71,6 @@ def getSiteResourceTree(siteID):
     return dataTree
 
 
-
 def tree_dict(d, need, attachmentList):
     for k, v in d.items():
         if k == need:
@@ -86,29 +88,25 @@ def tree_list(l, need, attachmentList):
         elif isinstance(item, list) and item:
             tree_list(item, need, attachmentList)
 
+
 def printSource(name, infoID):
     source = len(name)
     print("云课堂上，本网站有 {} 个资源可供下载".format(source))
     for i in range(source):
         print("{0}. {1}".format(i + 1, name[i]))
-        print("本课件下载链接，请手动点击、重命名、并下载：")
+        print("下面是本课件下载链接，请根据个人需求点击链接、重命名、并下载：")
         print("http://spoc.ccnu.edu.cn:80/getFileStream/" + infoID[i])
         print("---------------------------------------------------------------------------------")
-
 
 
 if __name__ == "__main__":
     account = input('输入账号：')
     password = input('输入密码：')
     resCookies = spocLogin(account, password)
-    siteID = input('输入您想要下载资源的网页 URL http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= 后面的字符串\n')
+    siteID = input('输入您想要下载资源的网页 URL 后面的字符串 http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= \n')
     bigConstTree = getSiteResourceTree(siteID)
     attachmentNameList = []
     attachmentInfoIdList = []
     tree_dict(bigConstTree, "attachmentName", attachmentNameList)
     tree_dict(bigConstTree, "attachmentInfoId", attachmentInfoIdList)
-    # print(len(attachmentNameList))
-    # print(len(attachmentInfoIdList))
     printSource(attachmentNameList, attachmentInfoIdList)
-
-
