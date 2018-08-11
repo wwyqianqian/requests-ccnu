@@ -1,4 +1,7 @@
+
+
 # requests-ccnu
+
 ### 脚本简介
 
 本仓库是 CCNUer 日常生活必备的小脚本集合。多是利用 py3 的 requests 库写出的，模拟登录学校网站后，进行您想要的查询和**适度**的爬取。实现很简单，点子更重要，欢迎校友提 PR。
@@ -23,8 +26,47 @@
 
   学校开放的好友搜索平台。目前支持输入学号范围，批量查询同学姓名。爬取照片由于属于隐私范畴，遂不做。
 
----
-
 ### 使用方法
 
-待更新……
+#### ccnu2ical.js
+
+登录教务管理系统，打开学生课表查询页面，待网页显示课表后，右键进入审查元素（inspect），在 console 中粘贴```ccnu2ical.js``` 里面的代码。回车后，即可下载到```.ics``` 格式的日历文件。此 js 代码段由友人 [@SumiMakito](https://github.com/SumiMakito) 贡献，十分感谢。
+
+#### ccnu2ical.py
+
+```pip install requests
+git clone https://github.com/wwyqianqian/requests-ccnu.git	
+```
+
+```
+pip install requests
+```
+
+```
+python3 ccnu2ical.py
+```
+
+目前是运行前需要手动输入 cookie，未来计划改写为模拟登录形式。
+
+#### spocDownloader.py
+
+```
+git clone https://github.com/wwyqianqian/requests-ccnu.git	
+```
+
+```
+pip install requests
+```
+
+```
+python3 spocDownloader.py
+```
+
+按照提示，模拟登录需要输入学校云课堂网站真实的学号密码，以及下载页面的部分 url (Site ID) 。
+
+### 效果演示
+
+
+
+
+
