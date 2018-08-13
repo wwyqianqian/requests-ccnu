@@ -78,3 +78,5 @@ python3 spocDownloader.py
 
 ### 友情链接
 
+* [ccnu2ical.js](https://github.com/wwyqianqian/requests-ccnu/blob/master/ccnu2ical.js) 作者 @SumiMakito，我的外校好友，帮忙写了 js 版本的代码：https://github.com/sumimakito
+* 数院魏同学写了与 spocDownloader.py 实现相同功能的代码，但是逻辑不同，欢迎围观此仓库：https://github.com/HaHaMaDrid/filedl_from_starC 
