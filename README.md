@@ -66,7 +66,15 @@ python3 spocDownloader.py
 
 ### 效果演示
 
+* 通过 iCloud 帐号同步课表：
+
+![](./apple.png)
 
 
 
+* 通过谷歌帐号同步课表：
+
+  ![](./google.png)
+
+### 友情链接
 
