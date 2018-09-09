@@ -9,6 +9,7 @@
 import requests
 import json
 import sys
+import getpass
 
 
 def spocLogin(account, password):
@@ -101,7 +102,7 @@ def printSource(name, infoID):
 
 if __name__ == "__main__":
     account = input('输入账号：')
-    password = input('输入密码：')
+    password = getpass.getpass('输入密码：(为了安全，您密码的输入不会显示在屏幕上，密码输入完毕请按回车键)')
     resCookies = spocLogin(account, password)
     siteID = input('输入您想要下载资源的网页 URL 后面的字符串 http://spoc.ccnu.edu.cn/studentHomepage/studentCourseCenter?siteId= \n')
     bigConstTree = getSiteResourceTree(siteID)
