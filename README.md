@@ -66,6 +66,10 @@ python3 spocDownloader.py
 
 ### 效果演示
 
+* 云课堂资源下载效果演示：
+
+  ![spoc.png](./spoc.jpg)
+
 * 通过 iCloud 帐号同步课表：
 
 ![](./apple.png)
